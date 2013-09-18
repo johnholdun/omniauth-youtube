@@ -21,7 +21,7 @@ module OmniAuth
 
       info do
         {
-          'uid' => user['id']['$t'],
+          'uid' => channel_id,
           'nickname' => user['author'].first['name']['$t'],
           'email'      => verified_email,
           'first_name' => user['yt$firstName'] && user['yt$firstName']['$t'],
@@ -36,6 +36,10 @@ module OmniAuth
 
       extra do
         { 'user_hash' => user }
+      end
+      
+      def channel_id
+        @channel_id ||= user['link'].detect{ |l| l['rel'] == 'alternate' }['href'].match(/channel\/(.+)$/)[1] rescue nil
       end
 
       def user
